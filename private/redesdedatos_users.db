@@ -1,0 +1,13 @@
+CREATE DATABASE redesdedatos;
+
+USE redesdedatos;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  apellido VARCHAR(50) NOT NULL,
+  celular VARCHAR(20) NOT NULL,
+  correo VARCHAR(100) NOT NULL,
+  usuario VARCHAR(50) NOT NULL,
+  contrasena VARCHAR(100) NOT NULL
+);

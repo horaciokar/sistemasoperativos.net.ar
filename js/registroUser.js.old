@@ -1,0 +1,45 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const connection = require('conexion.js'); // Importar la conexión
+
+// Configurar bodyParser para poder acceder a los datos enviados en el cuerpo de la solicitud
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Ruta para manejar el registro de usuarios
+app.post('/registrarUsuario', (req, res) => {
+  const { nombre, apellido, correo, usuario, contrasena } = req.body;
+
+  // Generar el hash de la contraseña (puedes usar bcrypt o alguna otra librería)
+  const hashContrasena = generarHashContrasena(contrasena);
+
+  // Consulta SQL para insertar el usuario en la tabla 'users'
+  const sql = 'INSERT INTO users (nombre, apellido, correo, usuario, contrasena) VALUES (?, ?, ?, ?, ?)';
+  const values = [nombre, apellido, correo, usuario, hashContrasena];
+
+  // Ejecutar la consulta SQL utilizando la conexión importada
+  connection.query(sql, values, (error, result) => {
+    if (error) {
+      console.error('Error al insertar el usuario:', error);
+      res.status(500).json({ message: 'Error al registrar el usuario' });
+    } else {
+      console.log('Usuario registrado exitosamente');
+      res.status(200).json({ message: 'Usuario registrado exitosamente' });
+    }
+  });
+});
+
+// Iniciar el servidor
+app.listen(3000, () => {
+  console.log('Servidor iniciado en el puerto 3000');
+});
+
+// Función para generar el hash de la contrasena (implementación de ejemplo)
+function generarHashContrasena(contrasena) {
+  // Aquí puedes utilizar una librería como bcrypt para generar el hash
+  // Por simplicidad, este es un ejemplo básico
+  const hash = require('crypto').createHash('sha256');
+  hash.update(contrasena);
+  return hash.digest('hex');
+}
